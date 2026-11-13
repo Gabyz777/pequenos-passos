@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>Clientes - Pequenos Passos</title></head>
+<body>
+    <nav>
+        Olá, <strong><%= usuario.nome %></strong> |
+        <a href="/clientes">Clientes</a> |
+        <a href="/grupos">Grupos</a> |
+        <a href="/logout">Sair</a>
+    </nav>
+    <hr>
+
+    <h2>Gestão de Clientes</h2>
+    <a href="/clientes/novo">+ Novo Cliente</a>
+    <br><br>
+
+    <form action="/clientes" method="GET">
+        <input type="text" name="busca" value="<%= busca %>" placeholder="Buscar por nome do responsável...">
+        <button type="submit">Buscar</button>
+        <% if (busca) { %><a href="/clientes">Limpar</a><% } %>
+    </form>
+    <br>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome Completo</th>
+                <th>CPF</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Grupo de Atendimento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% clientes.forEach(c => { %>
+                <tr>
+                    <td><%= c.id %></td>
+                    <td><%= c.nome_completo %></td>
+                    <td><%= c.cpf %></td>
+                    <td><%= c.email %></td>
+                    <td><%= c.telefone %></td>
+                    <td><%= c.nome_grupo || 'Sem grupo' %></td>
+                    <td>
+                        <a href="/clientes/editar/<%= c.id %>">Editar</a> |
+                        <a href="/clientes/deletar/<%= c.id %>">Excluir</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

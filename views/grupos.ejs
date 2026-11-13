@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>Grupos de Atendimento</title></head>
+<body>
+    <nav>
+        Olá, <strong><%= usuario.nome %></strong> |
+        <a href="/clientes">Clientes</a> |
+        <a href="/grupos">Grupos</a> |
+        <a href="/logout">Sair</a>
+    </nav>
+    <hr>
+
+    <h2>Novo Grupo de Atendimento</h2>
+    <% if (erro) { %>
+        <p style="color: red;"><%= erro %></p>
+    <% } %>
+    <form action="/grupos/novo" method="POST">
+        <input type="text" name="nome" placeholder="Nome do Grupo" required>
+        <input type="text" name="descricao" placeholder="Descrição">
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <h2>Grupos Cadastrados</h2>
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% grupos.forEach(g => { %>
+                <tr>
+                    <td><%= g.id %></td>
+                    <td><%= g.nome %></td>
+                    <td><%= g.descricao %></td>
+                    <td>
+                        <a href="/grupos/editar/<%= g.id %>">Editar</a> |
+                        <a href="/grupos/deletar/<%= g.id %>">Excluir</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>
