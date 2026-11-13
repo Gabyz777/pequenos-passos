@@ -6,20 +6,16 @@ import { fileURLToPath } from 'url';
 import pool from './db.js';
 import { verificarAutenticacao } from './middleware/auth.js';
 
-// Recriação de __dirname para ES6 Modules em Node.js
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Configuração do motor de visualização EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Parsing de formulários HTML
 app.use(express.urlencoded({ extended: true }));
 
-// Configuração de Sessão de Usuário
 app.use(session({
     secret: 'chave_secreta_pequenos_passos',
     resave: false,
@@ -27,9 +23,7 @@ app.use(session({
     cookie: { maxAge: 1000 * 60 * 60 }
 }));
 
-// ==========================================
 // ROTAS DE AUTENTICAÇÃO (CPF E SENHA)
-// ==========================================
 
 app.get('/login', (req, res) => {
     res.render('login', { erro: null });
@@ -71,11 +65,8 @@ app.get('/logout', (req, res) => {
     });
 });
 
-// ==========================================
 // ROTAS DO CRUD DE GRUPOS DE ATENDIMENTO
-// ==========================================
 
-// Lista todos os grupos cadastrados
 app.get('/grupos', verificarAutenticacao, async (req, res) => {
     try {
         const resultado = await pool.query('SELECT * FROM grupos_clientes ORDER BY id ASC');
@@ -90,7 +81,6 @@ app.get('/grupos', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Cadastra um novo grupo
 app.post('/grupos/novo', verificarAutenticacao, async (req, res) => {
     const { nome, descricao } = req.body;
     try {
@@ -105,7 +95,6 @@ app.post('/grupos/novo', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Exibe formulário de edição de grupo
 app.get('/grupos/editar/:id', verificarAutenticacao, async (req, res) => {
     const { id } = req.params;
     try {
@@ -123,7 +112,6 @@ app.get('/grupos/editar/:id', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Atualiza grupo no banco
 app.post('/grupos/editar/:id', verificarAutenticacao, async (req, res) => {
     const { id } = req.params;
     const { nome, descricao } = req.body;
@@ -139,7 +127,6 @@ app.post('/grupos/editar/:id', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Exclui um grupo (com proteção para ON DELETE RESTRICT)
 app.get('/grupos/deletar/:id', verificarAutenticacao, async (req, res) => {
     const { id } = req.params;
     try {
@@ -151,11 +138,8 @@ app.get('/grupos/deletar/:id', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// ==========================================
-// ROTAS DO CRUD DE CLIENTES (RELACIONAL)
-// ==========================================
+// ROTAS DO CRUD DE CLIENTES 
 
-// Lista clientes com LEFT JOIN e filtro de busca ILIKE
 app.get('/clientes', verificarAutenticacao, async (req, res) => {
     const busca = req.query.busca || '';
 
@@ -180,7 +164,6 @@ app.get('/clientes', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Exibe formulário de novo cliente com lista de grupos para o <select>
 app.get('/clientes/novo', verificarAutenticacao, async (req, res) => {
     try {
         const gruposResultado = await pool.query('SELECT * FROM grupos_clientes ORDER BY nome ASC');
@@ -194,7 +177,6 @@ app.get('/clientes/novo', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Insere cliente com chave estrangeira grupo_id
 app.post('/clientes/novo', verificarAutenticacao, async (req, res) => {
     const { nome_completo, cpf, email, telefone, grupo_id } = req.body;
     const idGrupoFinal = grupo_id ? parseInt(grupo_id) : null;
@@ -211,7 +193,6 @@ app.post('/clientes/novo', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Exibe formulário de edição de cliente com pré-seleção de grupo
 app.get('/clientes/editar/:id', verificarAutenticacao, async (req, res) => {
     const { id } = req.params;
 
@@ -234,7 +215,6 @@ app.get('/clientes/editar/:id', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Atualiza cliente no banco
 app.post('/clientes/editar/:id', verificarAutenticacao, async (req, res) => {
     const { id } = req.params;
     const { nome_completo, cpf, email, telefone, grupo_id } = req.body;
@@ -252,7 +232,6 @@ app.post('/clientes/editar/:id', verificarAutenticacao, async (req, res) => {
     }
 });
 
-// Deleta cliente
 app.get('/clientes/deletar/:id', verificarAutenticacao, async (req, res) => {
     const { id } = req.params;
 
